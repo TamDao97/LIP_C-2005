@@ -1313,8 +1313,48 @@ wstring getOSName(){
 	PGNSI pGNSI = (PGNSI)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetNativeSystemInfo");
 	if (pGNSI) pGNSI(&sysinfo);
 	else GetSystemInfo(&sysinfo);
+	//------------------
+	wchar_t path[200] = L"C:\\Windows\\System32\\kernel32.dll";
+	DWORD dwDummy;
+	DWORD dwFVISize = GetFileVersionInfoSize(path, &dwDummy);
+	LPBYTE lpVersionInfo = new BYTE[dwFVISize];
+	if (GetFileVersionInfo(path, 0, dwFVISize, lpVersionInfo) == 0)
+	{
+		return FALSE;
+	}
+
+	UINT uLen;
+	VS_FIXEDFILEINFO* lpFfi;
+	BOOL bVer = VerQueryValue(lpVersionInfo, L"\\", (LPVOID*)&lpFfi, &uLen);
+
+	if (!bVer || uLen == 0)
+	{
+		return L"Unknown windows";
+	}
+
+	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
+	info.dwMajorVersion = HIWORD(dwProductVersionMS);
+	info.dwMinorVersion = LOWORD(dwProductVersionMS);
 
 
+	HKeyHolder currentVersion;
+	if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, LR"(SOFTWARE\Microsoft\Windows NT\CurrentVersion)", 0, KEY_QUERY_VALUE, &currentVersion) != ERROR_SUCCESS)
+		return L"Unknown windows";
+	DWORD valueType;
+	BYTE buffer[256];
+	DWORD bufferSize = 256;
+
+	if (RegQueryValueExW(currentVersion, L"CurrentBuild", nullptr, &valueType, buffer, &bufferSize) != ERROR_SUCCESS)
+		return false;
+
+	if (valueType != REG_SZ)
+		return false;
+
+	int version;
+	std::wistringstream versionStream(reinterpret_cast<wchar_t*>(buffer));
+	versionStream >> version;
+	info.dwBuildNumber = version;
+	//------------------
 /*
 	OSVERSIONINFO info;
 	ZeroMemory(&info, sizeof(OSVERSIONINFO));
@@ -2262,6 +2302,171 @@ wstring getOSName(){
 		//http://www.g-ishihara.com/vc_wi_01.htm
 		//マニフェストのexe名は、マニフェストと実際のexe名が違っていても問題ないっぽい
 		}else if(info.dwMajorVersion == 10 && info.dwMinorVersion == 0){
+			//-----------------
+			if (info.dwBuildNumber >= 22000) {
+				OSName += L"Windows 11";
+				///		Windows11のエディション
+					//	エディションは7種類※ヨーロッパの反トラスト法に対応するため、MediaPlayer12を外したNがつくものもある
+					/*Windows 11 Home
+						Windows 11 Education
+						Windows 11 Pro
+						Windows 11 Pro Education
+						Windows 11 Pro for Workstations
+						Windows 11 IoT Enterprise
+						Windows 11 Enterprise*/
+						///	正式版で確認する事項：
+						//	・Nエディションがあるものがある。
+						//	ライフサイクル表 https://docs.microsoft.com/ja-jp/lifecycle/faq/windows
+				if (info.wProductType == VER_NT_WORKSTATION) {
+					//	dwordCSDVersion
+					/*OSName += L"Windows 11";*/
+					//		Windows11のBuildNumberは22000から始まっている。
+					//		http://www.tenforums.com/windows-insider/1946-download-windows-10-insider-preview-iso-file.html
+					//		http://tattu1902.blog136.fc2.com/blog-entry-99.html
+					{
+						if (type == PRODUCT_CORE) {
+							//	Home相当は無印
+							OSName += L" Home";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_CORE_N) {
+							///		Home相当は無印
+							OSName += L" Home N";
+							OSName += L" N";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_CORE_COUNTRYSPECIFIC) {
+							OSName += L" Home China";
+							OSName += L" China";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_CORE_SINGLELANGUAGE) {
+							OSName += L" Home Single Language";
+							//OSName += L" Single Language";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_MOBILE_CORE) {
+							OSName += L" Mobile";
+						}
+						else if (type == PRODUCT_PROFESSIONAL) {
+							OSName += L" Pro";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_PROFESSIONAL_N) {
+							OSName += L" Pro N";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_ENTERPRISE) {
+							OSName += L" Enterprise";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_ENTERPRISE_EVALUATION) {
+							OSName += L" Enterprise (evaluation installation)";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_ENTERPRISE_E) {
+							///	Windows 10 Enterprise Eとは何かよく分からないが一応追加
+							OSName += L" Enterprise E";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_ENTERPRISE_N) {
+							OSName += L" Enterprise N";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_ENTERPRISE_N_EVALUATION) {
+							OSName += L" Enterprise N (evaluation installation)";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_EDUCATION) {
+							OSName += L" Education";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_EDUCATION_N) {
+							OSName += L" Education N";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+						else if (type == PRODUCT_MOBILE_ENTERPRISE) {
+							OSName += L" Mobile Enterprise";
+						}
+						else {
+							OSName += L" (Unknown Edition)";
+							if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+								OSName += L" (64bit)";
+							}
+							else {
+								OSName += L" (32bit)";
+							}
+						}
+					}
+				}
+			}
+			//-----------------
+			
 			//Windows10のエディション
 			//エディションは6種類
 			//正式版で確認する事項：
@@ -4544,23 +4749,37 @@ long InventoryManager::scanRegistry(BOOL scan64bit, BOOL scanHKCU){
 			}
 			//DisplayName_Localizedというレジストリ値があるときは、LocalizedString化してそれを取得する
 			//★★未実装★★REG_SZ以外の確認、空文字列時の挙動、ProductNameのLocalized対応有無
+			//---------------------------
 			regValue DisplayNameLocalizedValue = uninstallSubkeyRegList.getValue(L"DisplayName_Localized");
-			if(DisplayNameLocalizedValue.name != L""){
-				if(DisplayNameLocalizedValue.type == L"REG_SZ" && DisplayNameLocalizedValue.data != L""){
-					wstring displayNameLocalizedValueData = getLocalizedString(DisplayNameLocalizedValue.data);
-					if(DisplayNameLocalizedValue.data != L""){
-						//_tprintf(TEXT("DisplayName_Localized:%s\n"), displayNameLocalizedValueData.c_str());
-						currentSoftwareInfo.Name = displayNameLocalizedValueData;
-						currentSoftwareInfos.push_back(currentSoftwareInfo);
-						if(debugLevel > 2){
-							PrintDebugLog(L"continue. displayNameLocalizedValueData == ");
-							PrintDebugLog(displayNameLocalizedValueData);
+			if (DisplayNameLocalizedValue.name != L"") {
+				if (DisplayNameLocalizedValue.type == L"REG_SZ" && DisplayNameLocalizedValue.data != L"")
+				{
+					try
+					{
+						wstring displayNameLocalizedValueData = getLocalizedString(DisplayNameLocalizedValue.data);
+						//ここでエラーが発生した場合はこの下のif分に入らないようにし、continueしないようにする。（2022/01/13）
+						if (displayNameLocalizedValueData != L"") {
+							//_tprintf(TEXT("DisplayName_Localized:%s\n"), displayNameLocalizedValueData.c_str());
+							currentSoftwareInfo.Name = displayNameLocalizedValueData;
+							currentSoftwareInfos.push_back(currentSoftwareInfo);
+							if (debugLevel > 2) {
+								PrintDebugLog(L"continue. displayNameLocalizedValueData == ");
+								PrintDebugLog(displayNameLocalizedValueData);
+								PrintDebugLog(L"\n");
+							}
+							continue;
+						}
+					}
+					catch (const std::exception&)
+					{
+						if (debugLevel > 2) {
+							PrintDebugLog(L"Exception from get localize");
 							PrintDebugLog(L"\n");
 						}
-						continue;
 					}
 				}
 			}
+			//---------------------------
 /*
 			//★★未検証★★
 			//Publisherというレジストリ値があり、かつ型がREG_SZまたはREG_EXPAND_SZでその値が""でない場合、リストに追加する
