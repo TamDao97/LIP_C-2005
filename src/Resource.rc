@@ -1,0 +1,199 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+1                       RT_MANIFEST             "res/Win32++.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDW_MAIN                ICON                    "res/ICSclient.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+//IDB_BITMAP1             BITMAP                  "res/Zapotec.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+//書き方参考
+//http://www.kumei.ne.jp/c_lang/bcc/bcc_08.htm
+//http://gurigumi.s349.xrea.com/programming/visualcpp/sdk_dialog_text.html
+//http://www-higashi.ist.osaka-u.ac.jp/~k-maeda/vcpp/sec7-2dialogrc.html
+
+IDD_DIALOG1 DIALOGEX 0, 0, 200, 260
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE |
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION VER_STR_WINDOWCAPTION
+//ダイアログのフォントの設定
+//これをしないと昔ながらの大きいシステムフォントのダイアログになる
+//FONT 8, "MS Shell Dlg", 0, 0, 0x1
+FONT 8, "MS Shell Dlg", 0, 0
+BEGIN
+//    DEFPUSHBUTTON   "OK",IDOK,75,170,50,16
+//    CONTROL         "Radio1",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,30,24,38,
+//                    10
+//    CONTROL         "Radio2",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,30,36,38,
+//                    10
+//    CONTROL         "Radio3",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON,30,48,38,
+//                    10
+//オプション指定の方法
+//http://msdn.microsoft.com/ja-jp/library/czada357(v=vs.80).aspx
+//http://msdn.microsoft.com/ja-jp/library/61fe4bte(v=vs.80).aspx
+//「|」で複数設定可能
+//ES_MULTILINE　複数行入力可能
+//WS_EX_STATICEDGE   3 次元の境界線スタイルを持つウィンドウを作成します
+//NOT WS_BORDER　枠線無し
+    LTEXT           VER_STR_LABEL_HARDWARE_NO,IDC_STATIC_HARDWARE_NO,30, 15,140,12
+    LTEXT           VER_STR_LABEL1,           IDC_STATIC1,           30, 45,140,12
+    LTEXT           VER_STR_LABEL2,           IDC_STATIC2,           30, 75,140,12
+    LTEXT           VER_STR_LABEL3,           IDC_STATIC3,           30,105,140,12
+    LTEXT           VER_STR_LABEL4,           IDC_STATIC4,           30,135,140,12
+    LTEXT           VER_STR_LABEL5,           IDC_STATIC5,           30,165,140,12
+    LTEXT           VER_STR_LABEL6,           IDC_STATIC6,           30,195,140,12
+    LTEXT           "上記に間違いがないことを確認し、OKをクリックしてください",IDC_STATIC_OK,30,280,140,36
+    EDITTEXT        IDC_EDIT_HARDWARE_NO,30, 25,140,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT1,           30, 55,140,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT2,           30, 85,140,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT3,           30,115,140,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT4,           30,145,140,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT5,           30,175,140,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT6,           30,205,140,12,ES_AUTOHSCROLL
+	//OKボタンを最初に定義すると、入力欄にフォーカスが当たらないとOKボタンが表示されない
+	//OKボタンをここで定義するとOKボタンが最初から表示される
+	DEFPUSHBUTTON   "OK",IDOK,75,230,50,16
+
+	//LTEXT           "a",    IDC_STATIC1,30,25,140,12
+    //LTEXT           "b",    IDC_STATIC2,30,65,140,12
+    //LTEXT           "c",    IDC_STATIC3,30,105,140,12
+	//RTEXT           "Expiry Date: 2014/11/11",IDC_STATIC5,100,190,100,10
+//    CONTROL         "Check Box 1",IDC_CHECK1,"Button",BS_AUTOCHECKBOX |
+//                    WS_TABSTOP,30,114,55,10
+//    CONTROL         "Check Box 2",IDC_CHECK2,"Button",BS_AUTOCHECKBOX |
+//                    WS_TABSTOP,30,126,55,10
+//    CONTROL         "Check Box 3",IDC_CHECK3,"Button",BS_AUTOCHECKBOX |
+//                    WS_TABSTOP,30,139,55,10
+//    LISTBOX         IDC_LIST1,120,23,84,35,LBS_SORT | LBS_NOINTEGRALHEIGHT |
+//                    NOT WS_BORDER | WS_VSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+//    PUSHBUTTON      "Button",IDC_BUTTON1,30,82,49,11
+//    CONTROL         "",IDC_RICHEDIT1,"RichEdit",ES_MULTILINE |
+//                    ES_AUTOHSCROLL | WS_BORDER | WS_TABSTOP,120,142,84,35
+//    CONTROL         IDB_BITMAP1,IDC_STATIC1,"Static",SS_BITMAP,231,7,64,59
+//    GROUPBOX        "Static Window",IDC_STATIC2,226,78,78,51,BS_CENTER
+//    LTEXT           "Actions are displayed here",IDC_STATIC3,229,91,71,35
+END
+
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+//http://exlight.net/devel/windows/verinfo/index.html
+//http://support.microsoft.com/kb/237870
+//http://msdn.microsoft.com/en-us/library/windows/desktop/aa381043(v=vs.85).aspx
+#include <winver.h>
+
+VS_VERSION_INFO    VERSIONINFO 
+//FILEVERSION        0,3,0,0
+//PRODUCTVERSION     0,3,0,0
+FILEVERSION        VER_FILEVERSION
+PRODUCTVERSION     VER_PRODUCTVERSION
+FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK 
+FILEFLAGS          0x00000000L
+FILEOS             VOS__WINDOWS32
+FILETYPE           VFT_APP
+FILESUBTYPE        VFT2_UNKNOWN
+
+//http://web.kyoto-inet.or.jp/people/ysskondo/chap6.html
+//LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+
+BEGIN
+    BLOCK "VarFileInfo"
+    BEGIN
+		//http://msdn.microsoft.com/en-us/library/windows/desktop/aa381057(v=vs.85).aspx
+        //VALUE "Translation", 0x0407, 1252 //German
+        //VALUE "Translation", 0x0409, 1252 //U.S. English
+        VALUE "Translation", 0x0411, 1252 //Japanese
+    END
+	
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "Comments",         VER_STR_COMMENTS
+            VALUE "CompanyName",      VER_STR_COMPANYNAME
+            VALUE "FileDescription",  VER_STR_FILEDESCRIPTION
+            VALUE "FileVersion",      VER_STR_FILEVERSION
+            VALUE "InternalName",     VER_STR_INTERNALNAME
+            VALUE "OriginalFileName", VER_STR_ORIGINALFILENAME
+            VALUE "LegalCopyright",   VER_STR_LEGALCOPYRIGHT
+            VALUE "ProductName",      VER_STR_PRODUCTNAME
+            VALUE "ProductVersion",   VER_STR_PRODUCTVERSION
+        END 
+    END
+	
+END
+
+
